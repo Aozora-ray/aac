@@ -27,6 +27,7 @@ def open_url(url):
     with urllib.request.urlopen(request) as response:
         print("【", response.status, "】Accessed URL: ", url, sep="")
         html = response.read().decode("utf-8")
+    time.sleep(0.5)
     return html
 
 def login_atcoder():
@@ -65,7 +66,6 @@ def download_task():
     request.add_header("Cookie", "REVEL_SESSION=" + login_information["revel_session"])
     tasks = open_url(contest_information["url"] + "/tasks")
     for url, id in re.findall(r'<td class="text-center no-break"><a href="([^"]+)">([^<]+)</a></td>', tasks):
-        time.sleep(1)
         url = "https://atcoder.jp" + url
         name = url.split("/")[-1]
         contest_information["tasks"][id] = {
@@ -138,15 +138,11 @@ def submit_answer(task_id):
     with urllib.request.urlopen(request, data) as response:
         print(response.status)
         submissions = response.read().decode("utf-8")
-    url = contest_information["url"] + re.search(r'/submissions/\d+', contest_information["url"]).group()
-    request = urllib.request.Request(url)
-    request.add_header("Cookie", "REVEL_SESSION=" + login_information["revel_session"])
-    time.sleep(1)
+    url = contest_information["url"] + re.search(r'/submissions/\d+', submissions).group()
     while True:
-        with urllib.request.urlopen(request) as response:
-            submission = response.read().decode("utf-8")
+        submission = open_url(url)
         status = re.search(r'<td id="judge-status"[^>]*>\s*<span[^>]*>([^<]+)</span>\s*</td>', submission).group(1)
-        if  status == "WJ" or "/" in status:
+        if status == "WJ" or "/" in status:
             print("\r\033[47m" + status + "\033[0m", end="")
         elif status == "AC":
             print("\r\033[42mAC\033[0m")
@@ -154,7 +150,7 @@ def submit_answer(task_id):
         else:
             print("\r\033[43m" + status + "\033[0m")
             break
-        time.sleep(2)
+        time.sleep(1.5)
 
 try:
     fd = sys.stdin.fileno()
