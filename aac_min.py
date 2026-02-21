@@ -95,26 +95,30 @@ def test_answer(task_id):
     contest_information["tasks"][task_id]["time"] = os.path.getmtime(task_id + ".cpp")
     os.system("g++ -std=gnu++23 -I/opt/homebrew/include -o bin/" + task_id + " " + task_id + ".cpp")
     contest_information["tasks"][task_id]["status"] = "AC"
+    print("=-=-= Test Result =-=-=-=-=-=-=-=")
+    print("Test Time:", contest_information["tasks"][task_id]["time"])
+    print("Task:", task_id)
+    print("Test Case:")
     for case_id in os.listdir("in/" + task_id):
         os.system("bin/" + task_id + " < in/" + task_id + "/" + case_id + " > user_out/" + task_id + "/" + case_id)
         with open("user_out/" + task_id + "/" + case_id, "r") as f:
-            user_output = f.read().strip()
+            user_output = f.read().split()
         with open("out/" + task_id + "/" + case_id, "r") as f:
-            case_output = f.read().strip()
-        with open("in/" + task_id + "/" + case_id, "r") as f:
-            case_input = f.read().strip()
-        if user_output == case_output:
-            print(case_id, "\033[42m AC \033[0m")
+            case_output = f.read().split()
+        case_result = "AC"
+        if len(user_output) == len(case_output):
+            for u, c in zip(user_output, case_output):
+                if u != c:
+                    case_result = "WA"
+                    break
         else:
-            print(case_id, "\033[41m WA \033[0m")
-            print("---- case input ----")
-            print(case_input)
-            print("---- case output ----")
-            print(case_output)
-            print("---- your output ----")
-            print(user_output)
-            print()
+            case_result = "WA"
+        if case_result == "AC":
+            print("|", case_id, "| \033[42m AC \033[0m |")
+        if case_result == "WA":
+            print("|", case_id, "| \033[43m WA \033[0m |")
             contest_information["tasks"][task_id]["status"] = "WA"
+    print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
     with open(".aac/contest_information.json", "w") as f:
         json.dump(contest_information, f, indent=4)
 
