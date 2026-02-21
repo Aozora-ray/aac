@@ -25,12 +25,7 @@ def open_url(url):
     request = urllib.request.Request(url)
     request.add_header("Cookie", "REVEL_SESSION=" + login_information["revel_session"])
     with urllib.request.urlopen(request) as response:
-        print("Accessed URL:", url, end=", ")
-        if response.status == 200:
-            print("\033[42m200\033[0m")
-        else:
-            print("\033[41m" + str(response.status) + "\033[0m")
-            raise Exception("Failed to access URL")
+        print("【", response.status, "】Accessed URL: ", url, sep="")
         html = response.read().decode("utf-8")
     return html
 
@@ -68,10 +63,7 @@ def download_task():
     contest_information = get_contest_information()
     request = urllib.request.Request(contest_information["url"] + "/tasks")
     request.add_header("Cookie", "REVEL_SESSION=" + login_information["revel_session"])
-    with urllib.request.urlopen(request) as response:
-        tasks = response.read().decode("utf-8")
-    with open(".aac/tasks.html", "w") as f:
-        f.write(tasks)
+    tasks = open_url(contest_information["url"] + "/tasks")
     for url, id in re.findall(r'<td class="text-center no-break"><a href="([^"]+)">([^<]+)</a></td>', tasks):
         time.sleep(1)
         url = "https://atcoder.jp" + url
@@ -88,8 +80,7 @@ def download_task():
         os.mkdir("user_out/" + id)
         request = urllib.request.Request(url)
         request.add_header("Cookie", "REVEL_SESSION=" + login_information["revel_session"])
-        with urllib.request.urlopen(request) as response:
-            cases = response.read().decode("utf-8")
+        cases = open_url(url)
         for case_id, case_input, case_output in re.findall('<h3>入力例 (\d+)</h3>\s*<pre>\s*([^<]*)</pre>.*?<h3>出力例 \d+</h3>\s*<pre>([^<]*)</pre>', cases, re.DOTALL):
             with open("in/" + id + "/" + case_id + ".txt", "w") as f:
                 f.write(html.unescape(case_input))
