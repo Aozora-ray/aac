@@ -8,6 +8,7 @@ import webbrowser
 import time
 import shutil
 import html
+import termios
 
 def get_login_information():
     with open("/Users/aotyam/Documents/GitHub/aac/test/.aac/login_information.json", "r") as f:
@@ -86,10 +87,8 @@ def download_task():
 
 def judge_answer(task_id):
     contest_information = get_contest_information()
-    #コンパイル
     contest_information["tasks"][task_id]["time"] = os.path.getmtime(task_id + ".cpp")
     os.system("g++ -std=gnu++23 -I/opt/homebrew/include -o bin/" + task_id + " " + task_id + ".cpp")
-    #テストケースごとに実行
     contest_information["tasks"][task_id]["status"] = "AC"
     for case_id in os.listdir("in/" + task_id):
         os.system("bin/" + task_id + " < in/" + task_id + "/" + case_id + " > user_out/" + task_id + "/" + case_id)
@@ -152,21 +151,29 @@ def submit_answer(task_id):
             break
         time.sleep(2)
 
-argv = []
-optv = []
-for arg in sys.argv:
-    if arg[0] == "-":
-        optv.append(arg)
-    else:
-        argv.append(arg)
-
-if argv[1] in ("li", "login"):
-    login_atcoder()
-elif argv[1] in ("m", "mk", "make"):
-    make_contest(argv[2])
-elif argv[1] in ("d", "dl", "download"):
-    download_task()
-elif argv[1] in ("j", "jg", "jdg", "judge"):
-    judge_answer(argv[2])
-elif argv[1] in ("s", "sm", "sbm", "submit"):
-    submit_answer(argv[2])
+try:
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    new_settings = termios.tcgetattr(fd)
+    new_settings[3] = new_settings[3] & ~termios.ECHO
+    termios.tcsetattr(fd, termios.TCSADRAIN, new_settings)
+    argv = []
+    optv = []
+    for arg in sys.argv:
+        if arg[0] == "-":
+            optv.append(arg)
+        else:
+            argv.append(arg)
+    if argv[1] in ("li", "login"):
+        login_atcoder()
+    elif argv[1] in ("m", "mk", "make"):
+        make_contest(argv[2])
+    elif argv[1] in ("d", "dl", "download"):
+        download_task()
+    elif argv[1] in ("j", "jg", "jdg", "judge"):
+        judge_answer(argv[2])
+    elif argv[1] in ("s", "sm", "sbm", "submit"):
+        submit_answer(argv[2])
+finally:
+    termios.tcflush(fd, termios.TCIFLUSH)
+    termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
