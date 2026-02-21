@@ -20,6 +20,20 @@ def get_contest_information():
         contest_information = json.load(f)
     return contest_information
 
+def open_url(url):
+    login_information = get_login_information()
+    request = urllib.request.Request(url)
+    request.add_header("Cookie", "REVEL_SESSION=" + login_information["revel_session"])
+    with urllib.request.urlopen(request) as response:
+        print("Accessed URL:", url, end=", ")
+        if response.status == 200:
+            print("\033[42m200\033[0m")
+        else:
+            print("\033[41m" + str(response.status) + "\033[0m")
+            raise Exception("Failed to access URL")
+        html = response.read().decode("utf-8")
+    return html
+
 def login_atcoder():
     revel_session = input("REVEL_SESSION: ")
     csrf_token = re.search(r"csrf_token:(.+?)\0", urllib.parse.unquote(revel_session)).group(1)
@@ -34,10 +48,10 @@ def login_atcoder():
 def make_contest(contest_id):
     os.mkdir(contest_id)
     os.chdir(contest_id)
+    os.mkdir("bin")
     os.mkdir("in")
     os.mkdir("out")
     os.mkdir("user_out")
-    os.mkdir("bin")
     os.mkdir(".aac")
     os.chdir(".aac")
     contest_information = {
