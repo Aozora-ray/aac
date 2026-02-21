@@ -96,9 +96,9 @@ def test_answer(task_id):
     os.system("g++ -std=gnu++23 -I/opt/homebrew/include -o bin/" + task_id + " " + task_id + ".cpp")
     contest_information["tasks"][task_id]["status"] = "AC"
     print("=-=-= Test Result =-=-=-=-=-=-=-=")
-    print("Test Time:", contest_information["tasks"][task_id]["time"])
-    print("Task:", task_id)
-    print("Test Case:")
+    print("Test Time :", contest_information["tasks"][task_id]["time"])
+    print("Task      :", task_id)
+    print("Test Case :")
     for case_id in os.listdir("in/" + task_id):
         os.system("bin/" + task_id + " < in/" + task_id + "/" + case_id + " > user_out/" + task_id + "/" + case_id)
         with open("user_out/" + task_id + "/" + case_id, "r") as f:
@@ -116,8 +116,22 @@ def test_answer(task_id):
         if case_result == "AC":
             print("|", case_id, "| \033[42m AC \033[0m |")
         if case_result == "WA":
-            print("|", case_id, "| \033[43m WA \033[0m |")
+            print("|", case_id, "| \033[41m WA \033[0m |")
+            with open("in/" + task_id + "/" + case_id, "r") as f:
+                print("----- Input ---------------")
+                print(f.read().strip())
+            with open("out/" + task_id + "/" + case_id, "r") as f:
+                print("----- Expected Output -----")
+                print(f.read().strip())
+            with open("user_out/" + task_id + "/" + case_id, "r") as f:
+                print("----- Your Output ---------")
+                print(f.read().strip())
+            print("---------------------------")
             contest_information["tasks"][task_id]["status"] = "WA"
+    if contest_information["tasks"][task_id]["status"] == "AC":
+        print("Status    : \033[42m AC \033[0m")
+    else:
+        print("Status    : \033[41m WA \033[0m")
     print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
     with open(".aac/contest_information.json", "w") as f:
         json.dump(contest_information, f, indent=4)
@@ -127,6 +141,7 @@ def submit_answer(task_id):
     contest_information = get_contest_information()
     if contest_information["tasks"][task_id]["status"] != "AC" or contest_information["tasks"][task_id]["time"] != os.path.getmtime(task_id + ".cpp"):
         test_answer(task_id)
+    contest_information = get_contest_information()
     if contest_information["tasks"][task_id]["status"] != "AC":
         return
     url = contest_information["url"] + "/submit"
