@@ -140,7 +140,6 @@ def submit_answer(task_id):
     }
     data = urllib.parse.urlencode(data).encode("utf-8")
     with urllib.request.urlopen(request, data) as response:
-        print(response.status)
         submissions = response.read().decode("utf-8")
     url = contest_information["url"] + re.search(r'/submissions/\d+', submissions).group()
     while True:
