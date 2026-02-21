@@ -85,7 +85,7 @@ def download_task():
     with open(".aac/contest_information.json", "w") as f:
         json.dump(contest_information, f, indent=4)
 
-def judge_answer(task_id):
+def test_answer(task_id):
     contest_information = get_contest_information()
     contest_information["tasks"][task_id]["time"] = os.path.getmtime(task_id + ".cpp")
     os.system("g++ -std=gnu++23 -I/opt/homebrew/include -o bin/" + task_id + " " + task_id + ".cpp")
@@ -117,7 +117,7 @@ def submit_answer(task_id):
     login_information = get_login_information()
     contest_information = get_contest_information()
     if contest_information["tasks"][task_id]["status"] != "AC" or contest_information["tasks"][task_id]["time"] != os.path.getmtime(task_id + ".cpp"):
-        judge_answer(task_id)
+        test_answer(task_id)
     if contest_information["tasks"][task_id]["status"] != "AC":
         return
     url = contest_information["url"] + "/submit"
@@ -170,9 +170,9 @@ try:
         make_contest(argv[2])
     elif argv[1] in ("d", "dl", "download"):
         download_task()
-    elif argv[1] in ("j", "jg", "jdg", "judge"):
-        judge_answer(argv[2])
-    elif argv[1] in ("s", "sm", "sbm", "submit"):
+    elif argv[1] in ("t", "ts", "test"):
+        test_answer(argv[2])
+    elif argv[1] in ("s", "sm", "submit"):
         submit_answer(argv[2])
 finally:
     termios.tcflush(fd, termios.TCIFLUSH)
