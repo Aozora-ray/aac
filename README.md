@@ -1,76 +1,46 @@
 # aac
-## 構成
-### データ
-- setting.json
-    - 
-- user_information.json
-    - is_login
-    - REVEL_SESSION
-    - csrf_token
-- contest/
-    - contest_information.json
-        - url
-        - task/
-            - url
-            - status
-### 関数
-- check_initialization
-```
-if カレントディレクトリにsetting.jsonがない
-    error_handling(0)
-if カレントディレクトリにuser_information.jsonがない
-    error_handling(0)
-```
-- error_handling(int error_code)
-```
-if error_code == 0
-    初期化が必要です。
-exit(1)
-```
-- get_login_information
-- 
-### コマンド
-- initialize
-- login
-```
-get_login_information()
-```
-- logout
-- make
-- remove
-- download
-- test
-- submit
 
-# sample
+aacは、aotyamによって制作されたAtCoder用の最もミニマムなテスト・提出・環境構築を行うCLIツールです。
+
+## 🎯 本ツールの目的と対象者
+
+このツールは、**「AtCoderのCLIでの提出ってどうやっているの？」** と気になっている方が、その原理や仕組みをストレスフリーに理解できるように設計されています。
+そのため、あえて複雑な機能は持たせず、仕組みが追いやすい「最もミニマム」な構成にしています。
+
+**【こんな方におすすめ】**
+- Pythonの構文がある程度読める方
+- ツールを自分好みにカスタマイズしたり、自分で機能を追加したい方
+- AtCoderのCLI操作の裏側を知りたい方
+
+## 💡 コンセプト
+
+**「改造・カスタマイズ前提」**
+本ツールは完成されたブラックボックスとしてではなく、あなたのワークフローに合わせて改造されることを推奨しています。
+スクリプトは意図的にシンプルに保たれており、ロジックの追加や変更が容易です。ぜひ中身をハックして、自分だけの最強の競技プログラミング環境を作り上げてください。
+
+## 🚀 使い方
+
+*(※以下は例です。実装に合わせて適宜書き換えてください)*
+
+```bash
+sudo ln -s aac.py /usr/local/bin/aac
+aac li
+aac m abc000
+cd abc000
+aac d
+aac s A
 ```
-=-=-= Test Result =-=-=-=-=-=-=-=
-Test Time : 2026-02-18 20:10:00
-Task      : A
-Code Size : 1611 Byte
-Test Case :
-| 1.txt |  AC  | 1ms | 3284 KiB |
-| 2.txt |  WA  | 2ms | 4224 KiB |
------ input -----------
-3
------ output ----------
-10
------ your output -----
-343
------------------------
-| 3.txt |  AC  | 4ms | 3941 KiB |
-Status    : WA
-Exec Time :
-Memory    :
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-=-=-= Submission -=-=-=-=-=-=-=-=
-Submission Time :
-Task            :
-Score           :
-Code Size       :
-Status          :
-Exec Time       :
-Memory          :
-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-Accessed following URL : https://atcoder.jp/contests/abc444 🟢 200
+```bash
+alias aac="python3 aac.py"
+aac login
+aac make abc000
+cd abc000
+aac download
+aac test A
+aac submit A
 ```
+
+## 🤝 貢献・ライセンス
+
+ご自由にフォークして改造していただいて構いません。
+自分に必要な機能（使用プログラミング言語ごとのコンパイル設定、スニペットの自動展開、通知など）を自由に追加し、あなただけのツールに育ててください。
