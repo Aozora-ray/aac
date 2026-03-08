@@ -1,4 +1,4 @@
-# aac
+# aac (Aotyam AtCoder CLI)
 
 aacは、aotyamによって制作されたAtCoder用の最もミニマムなテスト・提出・環境構築を行うCLIツールです。
 
@@ -18,29 +18,87 @@ aacは、aotyamによって制作されたAtCoder用の最もミニマムなテ�
 本ツールは完成されたブラックボックスとしてではなく、あなたのワークフローに合わせて改造されることを推奨しています。
 スクリプトは意図的にシンプルに保たれており、ロジックの追加や変更が容易です。ぜひ中身をハックして、自分だけの最強の競技プログラミング環境を作り上げてください。
 
-## 🚀 使い方
+---
 
-*(※以下は例です。実装に合わせて適宜書き換えてください)*
+## ⚙️ 初期設定 (SETTING)
 
-```bash
-sudo ln -s aac.py /usr/local/bin/aac
-aac li
-aac m abc000
-cd abc000
-aac d
-aac s A
+`aac.py` ファイル内の 52行目〜70行目付近にある `SETTING` ブロックを編集することで、コンパイル環境や使用言語を自分好みにカスタマイズできます。
+
+```python
+# Compile command for C or C++ (e.g. "gcc", "clang")
+# 注意: -o オプションは自動で付与されるため含めないでください
+COMPILE_CMD = ["g++", "-O0", "-std=gnu++23", "-I/opt/homebrew/include"]
+
+# Submission language ID for AtCoder
+# AtCoderの提出言語IDを指定します（デフォルトは "6017": C++23 (GCC 15.2.0)）
+LANG_ID = "6017"
+
+# Template file path
+# 問題ごとに自動展開されるテンプレートファイルのパス。存在しない場合は空ファイルが作成されます
+TEMPLATE_FILE = SCRIPT_DIR / "template.cpp"
+
+# login information file path
+# ログイン情報を保存するファイルのパス（自動生成されます）
+LOGIN_INFO_FILE = SCRIPT_DIR / ".aac_login_info.pkl"
 ```
+
+ご自身の環境（Windows / macOS / Linux）やコンパイラのパスに合わせて、`COMPILE_CMD` や、書き慣れた別の言語ID（`LANG_ID`）に書き換えてご利用ください。
+
+> **💡 Windows環境でご利用の方へ**  
+> Windows環境では実行ファイルの拡張子として `.exe` が必要な場合があります。上手く動作しない場合は、`aac.py` 内のコンパイル出力や実行ファイルのパス指定（`bin_file` 周りの実装）に `.exe` を追加すると動くかもしれません。
+
+---
+
+## 🚀 使い方とコマンド一覧
+
+### コマンドのエイリアス設定（推奨）
+スムーズに利用するために、エイリアスやシンボリックリンクの設定をおすすめします。
 ```bash
-alias aac="python3 aac.py"
+# 方法1: エイリアスを張る場合
+alias aac="python3 /path/to/aac/aac.py"
+
+# 方法2: シンボリックリンクを張る場合
+sudo ln -s /path/to/aac/aac.py /usr/local/bin/aac
+```
+
+### 基本的なワークフロー
+```bash
+# 1. AtCoderへのログイン (REVEL_SESSION の入力が求められます)
 aac login
-aac make abc000
-cd abc000
+
+# 2. コンテストディレクトリの作成
+aac make abc100
+cd abc100
+
+# 3. 問題とサンプルケースのダウンロード
 aac download
+
+# --- ここでエディタを開き、A.cpp などを編集して問題を解く ---
+
+# 4. サンプルケースでのテスト
 aac test A
+
+# 5. AtCoderへの提出（テスト通過後に提出されます）
 aac submit A
 ```
+
+### コマンド一覧
+
+| コマンド | エイリアス | 説明 | オプション例 |
+| --- | --- | --- | --- |
+| `login` | `li` | AtCoderへのログイン処理 | `-f` (強制再ログイン) |
+| `logout` | `lo` | AtCoderからログアウト | |
+| `make` | `mk` / `m` | コンテストディレクトリを作成 | `<contest_id>` (例: abc100) |
+| `remove` | `rm` / `r` | コンテストディレクトリを削除 | `<contest_dir>` |
+| `download` | `dl` / `d` | 課題とサンプルテストケースのダウンロード | `<contest_dir>` |
+| `execute` | `ex` / `e` | 作成したコードのコンパイルとローカル実行 | `<task_id>` (例: A) |
+| `test` | `ts` / `t` | サンプルケースを使ったテストの実行 | `<task_id>` , `-a` (全結果表示) |
+| `submit` | `sm` / `s` | テスト後にAtCoderへの提出を実行 | `<task_id>` , `-f` (テスト省略), `-a` (全結果表示) |
+
+---
 
 ## 🤝 貢献・ライセンス
 
 ご自由にフォークして改造していただいて構いません。
 自分に必要な機能（使用プログラミング言語ごとのコンパイル設定、スニペットの自動展開、通知など）を自由に追加し、あなただけのツールに育ててください。
+
