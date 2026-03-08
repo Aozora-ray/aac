@@ -236,6 +236,8 @@ class AotyamAtCoderCLI:
         self.contest_info_file = contest_dir / REL_CONTEST_INFO_FILE
         self.get_login_info()
         self.get_contest_info()
+        if self.login_info["revel_session"] == "":
+            print_error("Not logged in")
         contest_tasks_url = self.contest_info["url"] + "/tasks"
         tasks, status = self.open_url(contest_tasks_url)
         for i in range(1, MAX_RETRY+1):
@@ -376,6 +378,8 @@ class AotyamAtCoderCLI:
         self.contest_info_file = REL_CONTEST_INFO_FILE
         self.get_login_info()
         self.get_contest_info()
+        if self.login_info["revel_session"] == "":
+            print_error("Not logged in")
         if task_id not in self.contest_info["tasks"]:
             print_error("Task ID", task_id, "not found")
         if not force:
