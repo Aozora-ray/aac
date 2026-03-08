@@ -27,7 +27,7 @@ aacは、aotyamによって制作されたAtCoder用の最もミニマムなテ�
 ```python
 # Compile command for C or C++ (e.g. "gcc", "clang")
 # 注意: -o オプションは自動で付与されるため含めないでください
-COMPILE_CMD = ["g++", "-O0", "-std=gnu++23", "-I/opt/homebrew/include"]
+COMPILE_CMD = ["g++", "-O0", "-std=gnu++23"]
 
 # Submission language ID for AtCoder
 # AtCoderの提出言語IDを指定します（デフォルトは "6017": C++23 (GCC 15.2.0)）
@@ -88,7 +88,7 @@ aac submit A
 | --- | --- | --- | --- |
 | `login` | `li` | AtCoderへのログイン処理 | `-f` (強制再ログイン) |
 | `logout` | `lo` | AtCoderからログアウト | |
-| `make` | `mk` / `m` | コンテストディレクトリを作成 | `<contest_id>` (例: abc100) |
+| `make` | `mk` / `m` | コンテストディレクトリを作成 | `<contest_id>` (必須)<br>`-o <dir>` (出力先指定)<br>`-f` (既存ディレクトリへの強制初期化) |
 | `remove` | `rm` / `r` | コンテストディレクトリを削除 | `<contest_dir>` |
 | `download` | `dl` / `d` | 課題とサンプルテストケースのダウンロード | `<contest_dir>` |
 | `execute` | `ex` / `e` | 作成したコードのコンパイルとローカル実行 | `<task_id>` (例: A) |

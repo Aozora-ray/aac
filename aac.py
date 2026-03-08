@@ -47,7 +47,7 @@ WORKERS = max(1, os.cpu_count() - 1)
 
 # Compile command for C or C++ (e.g. "gcc", "clang")
 # -o option should not be included
-COMPILE_CMD = ["g++", "-O0", "-std=gnu++23", "-I/opt/homebrew/include"]
+COMPILE_CMD = ["g++", "-O0", "-std=gnu++23"]
 # Submission language ID for AtCoder
 # Below is a list of C or C++ IDs.
 # - 6013 C23 (Clang 21.1.0)
