@@ -409,6 +409,7 @@ class AotyamAtCoderCLI:
             judge_status = match.group(1)
             print("\033[47mStatus \033[0m:", STATUS_COLOR.get(judge_status, "\033[1;47m") + judge_status + "\033[0m", end="", flush=True)
             if judge_status != "WJ" and "/" not in judge_status:
+                print("\r", end="", flush=True)
                 break
             for i in range(3):
                 time.sleep(1)
