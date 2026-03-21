@@ -152,9 +152,15 @@ class AotyamAtCoderCLI:
         self.has_used_https = True
         request = urllib.request.Request(url)
         request.add_header("Cookie", "REVEL_SESSION=" + self.login_info["revel_session"])
-        with urllib.request.urlopen(request, data) as response:
-            print_info("Accessed", url, "-", response.status)
-            return response.read().decode("utf-8"), response.status
+        try:
+            with urllib.request.urlopen(request, data) as response:
+                html = response.read().decode("utf-8")
+                status = response.status
+        except urllib.error.HTTPError as e:
+            html = e.read().decode("utf-8")
+            status = e.code
+        print_info("Accessed", url, "-", status)
+        return html, status
     
     def compile_answer(self, task_id):
         answer_file = Path(task_id + TEMPLATE_FILE.suffix)
