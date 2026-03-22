@@ -416,7 +416,7 @@ class AotyamAtCoderCLI:
                 print_error("Failed to get submission status")
             judge_status = match.group(1)
             for status in STATUS_PRIORITY.keys():
-                if status in submission:
+                if status in judge_status:
                     print("\033[47mStatus \033[0m:", STATUS_COLOR[status], judge_status, "\033[0m", end="", flush=True)
                     break
             if judge_status != "WJ" and "/" not in judge_status:
