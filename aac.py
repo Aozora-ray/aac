@@ -427,8 +427,8 @@ class AotyamAtCoderCLI:
                 print(".", end="", flush=True)
             print("\r", end="", flush=True)
         print("=-=-= Submit result =-=-=-=-=-=-=-=-=-=-=-=-=")
-        print("\033[40mTask   \033[0m:", task_id)
-        print("\033[40mStatus \033[0m:", STATUS_COLOR[judge_status], judge_status, "\033[0m")
+        print("\033[40m Task        \033[0m :", task_id)
+        print("\033[40m Status      \033[0m :", STATUS_COLOR[judge_status], judge_status, "\033[0m")
         print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
             
 def main():
