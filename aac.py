@@ -17,15 +17,17 @@ from concurrent.futures import ThreadPoolExecutor
 
 # constants
 STATUS_COLOR = {
-    "AC" : "\033[1;42m",
-    "MLE" : "\033[1;43m",
-    "TLE": "\033[1;43m",
-    "WA" : "\033[1;41m",
-    "OLE" : "\033[1;43m",
-    "RE" : "\033[1;43m",
-    "CE" : "\033[1;43m",
-    "QLE" : "\033[1;43m",
-    "IE" : "\033[1;44m"
+    "AC" : "\033[38;2;255;255;255;48;2;92;184;92m",
+    "MLE" : "\033[38;2;255;255;255;48;2;240;173;78m",
+    "TLE": "\033[38;2;255;255;255;48;2;240;173;78m",
+    "WA" : "\033[38;2;255;255;255;48;2;240;173;78m",
+    "OLE" : "\033[38;2;255;255;255;48;2;240;173;78m",
+    "RE" : "\033[38;2;255;255;255;48;2;240;173;78m",
+    "CE" : "\033[38;2;255;255;255;48;2;240;173;78m",
+    "QLE" : "\033[38;2;255;255;255;48;2;240;173;78m",
+    "IE" : "\033[38;2;255;255;255;48;2;77;77;77m",
+    "WJ" : "\033[38;2;255;255;255;48;2;77;77;77m",
+    "/" : "\033[38;2;255;255;255;48;2;77;77;77m"
 }
 STATUS_PRIORITY = {
     "CE" : 0,
@@ -413,7 +415,10 @@ class AotyamAtCoderCLI:
             if match is None:
                 print_error("Failed to get submission status")
             judge_status = match.group(1)
-            print("\033[47mStatus \033[0m:", STATUS_COLOR.get(judge_status, "\033[1;47m") + judge_status + "\033[0m", end="", flush=True)
+            for status in STATUS_PRIORITY.keys():
+                if status in submission:
+                    print("\033[47mStatus \033[0m:", STATUS_COLOR[status], judge_status, "\033[0m", end="", flush=True)
+                    break
             if judge_status != "WJ" and "/" not in judge_status:
                 print("\r", end="", flush=True)
                 break
