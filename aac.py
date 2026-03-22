@@ -415,7 +415,7 @@ class AotyamAtCoderCLI:
             if match is None:
                 print_error("Failed to get submission status")
             judge_status = match.group(1)
-            for status in STATUS_PRIORITY.keys():
+            for status in STATUS_COLOR.keys():
                 if status in judge_status:
                     print("\033[47mStatus \033[0m:", STATUS_COLOR[status], judge_status, "\033[0m", end="", flush=True)
                     break
