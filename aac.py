@@ -352,33 +352,33 @@ class AotyamAtCoderCLI:
                     case_info["time"] = case_time
             for case_info in self.contest_info["tasks"][task_id]["cases"]:
                 print_line()
-                print("\033[47m Case        \033[0m :", case_info["file_name"])
+                print("\033[40m Case        \033[0m :", case_info["file_name"])
                 if STATUS_PRIORITY[case_info["status"]] < STATUS_PRIORITY[self.contest_info["tasks"][task_id]["status"]]:
                     self.contest_info["tasks"][task_id]["status"] = case_info["status"]
-                print("\033[47m Status      \033[0m :", STATUS_COLOR[case_info["status"]], case_info["status"], "\033[0m")
+                print("\033[40m Status      \033[0m :", STATUS_COLOR[case_info["status"]], case_info["status"], "\033[0m")
                 if case_info["status"] == "TLE":
-                    print("\033[47m Time        \033[0m : >", case_info["time"], "ms")
+                    print("\033[40m Time        \033[0m : >", case_info["time"], "ms")
                 else:
-                    print("\033[47m Time        \033[0m :", case_info["time"], "ms")
+                    print("\033[40m Time        \033[0m :", case_info["time"], "ms")
                     if case_info["status"] == "WA" or (case_info["status"] == "AC" and all_display):
                         in_file = Path("in") / task_id / case_info["file_name"]
                         out_file = Path("out") / task_id / case_info["file_name"]
                         usr_out_file = Path("usr_out") / task_id / case_info["file_name"]
-                        print("\033[47m Input       \033[0m :")
+                        print("\033[40m Input       \033[0m :")
                         with open(in_file, "r") as f:
                             print(f.read().strip())
-                        print("\033[47m Output      \033[0m :")
+                        print("\033[40m Output      \033[0m :")
                         with open(out_file, "r") as f:
                             print(f.read().strip())
-                        print("\033[47m Your Output \033[0m :")
+                        print("\033[40m Your Output \033[0m :")
                         with open(usr_out_file, "r") as f:
                             print(f.read().strip())
             print_line()
         else:
             self.contest_info["tasks"][task_id]["status"] = "CE"
         print("=-=-= Test result =-=-=-=-=-=-=-=-=-=-=-=-=-=")
-        print("\033[47m Task        \033[0m :", task_id)
-        print("\033[47m Status      \033[0m :", STATUS_COLOR[self.contest_info["tasks"][task_id]["status"]], self.contest_info["tasks"][task_id]["status"], "\033[0m")
+        print("\033[40m Task        \033[0m :", task_id)
+        print("\033[40m Status      \033[0m :", STATUS_COLOR[self.contest_info["tasks"][task_id]["status"]], self.contest_info["tasks"][task_id]["status"], "\033[0m")
         print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
         self.save_contest_info()
     
@@ -417,7 +417,7 @@ class AotyamAtCoderCLI:
             judge_status = match.group(1)
             for status in STATUS_COLOR.keys():
                 if status in judge_status:
-                    print("\033[47mStatus \033[0m:", STATUS_COLOR[status], judge_status, "\033[0m", end="", flush=True)
+                    print("\033[40mStatus \033[0m:", STATUS_COLOR[status], judge_status, "\033[0m", end="", flush=True)
                     break
             if judge_status != "WJ" and "/" not in judge_status:
                 print("\r", end="", flush=True)
@@ -427,8 +427,8 @@ class AotyamAtCoderCLI:
                 print(".", end="", flush=True)
             print("\r", end="", flush=True)
         print("=-=-= Submit result =-=-=-=-=-=-=-=-=-=-=-=-=")
-        print("\033[47mTask   \033[0m:", task_id)
-        print("\033[47mStatus \033[0m:", STATUS_COLOR[judge_status], judge_status, "\033[0m")
+        print("\033[40mTask   \033[0m:", task_id)
+        print("\033[40mStatus \033[0m:", STATUS_COLOR[judge_status], judge_status, "\033[0m")
         print("=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=")
             
 def main():
