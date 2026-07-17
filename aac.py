@@ -277,7 +277,7 @@ class AotyamAtCoderCLI:
             for dir_name in ["in", "out", "usr_out"]:
                 (contest_dir / dir_name / task_id).mkdir(exist_ok=True)
             cases, status = self.open_url(task_url)
-            for case_id, case_in, case_out in re.findall('Sample Input ([^<]+)</h3>\s*<pre[^>]*>([^<]*)</pre>\s*</section>\s*</div>\s*<div[^>]*>\s*<section[^>]*>\s*<h3[^>]*>Sample Output [^<]+</h3>\s*<pre[^>]*>([^<]*)', cases):
+            for case_id, case_in, case_out in re.findall(r'Sample Input ([^<]+)</h3>\s*<pre[^>]*>([^<]*)</pre>\s*</section>\s*</div>\s*<div[^>]*>\s*<section[^>]*>\s*<h3[^>]*>Sample Output [^<]+</h3>\s*<pre[^>]*>([^<]*)', cases):
                 case_filename = "sample_" + case_id + ".txt"
                 with open(contest_dir / "in" / task_id / case_filename, "w") as f:
                     f.write(html.unescape(case_in))
@@ -404,20 +404,29 @@ class AotyamAtCoderCLI:
                 "csrf_token": self.login_info["csrf_token"]
             }
         submissions, status = self.open_url(submit_url, urllib.parse.urlencode(data).encode("utf-8"))
-        match = re.search(r'/submissions/\d+', submissions)
+        match = re.search(r'/submissions/(\d+)', submissions)
         if match is None:
             print_error("Submission failed")
+        submission_id = match.group(1)
         print_success("Submission succeeded")
-        submission_url = self.contest_info["url"] + match.group()
+        submissions_me_url = self.contest_info["url"] + "/submissions/me"
         while True:
-            submission, status = self.open_url(submission_url)
-            match = re.search(r'judge-status[^>]*>\s*<span[^>]*>([^<]+)', submission)
+            html_content, status = self.open_url(submissions_me_url)
+            rows = re.findall(r'<tr[^>]*>(.*?)</tr>', html_content, re.DOTALL | re.IGNORECASE)
+            target_row = None
+            for row in rows:
+                if f"/submissions/{submission_id}" in row or f"data-id=\"{submission_id}\"" in row or f"data-id='{submission_id}'" in row:
+                    target_row = row
+                    break
+            if target_row is None:
+                print_error("Failed to find the submission in the list")
+            match = re.search(r'<span[^>]*class=\s*[\'"]label label-[^\'"]+[\'"][^>]*>\s*([^\s<][^<]*[^\s<]|[^\s<])\s*</span>', target_row)
             if match is None:
                 print_error("Failed to get submission status")
-            judge_status = match.group(1)
-            for status in STATUS_COLOR.keys():
-                if status in judge_status:
-                    print("\033[40mStatus \033[0m:", STATUS_COLOR[status], judge_status, "\033[0m", end="", flush=True)
+            judge_status = match.group(1).strip()
+            for status_key in STATUS_COLOR.keys():
+                if status_key in judge_status:
+                    print("\033[40mStatus \033[0m:", STATUS_COLOR[status_key], judge_status, "\033[0m", end="", flush=True)
                     break
             if judge_status != "WJ" and "/" not in judge_status:
                 print("\r", end="", flush=True)
