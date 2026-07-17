@@ -255,7 +255,7 @@ class AotyamAtCoderCLI:
             tasks, status = self.open_url(contest_tasks_url)
         if status != 200:
             print_error("Failed to access tasks page")
-        for task_url, task_id, task_name, task_time_limit in re.findall(r'<td[^>]*>\s*<a href="([^"]*)">([^<]*)</a>\s*</td>\s*<td[^>]*>\s*<a[^>]*>([^<]*)</a>\s*</td>\s*<td[^>]*>(\S*) sec</td>', tasks):
+        for task_url, task_id, task_name, task_time_limit in re.findall(r'<td[^>]*>[^<]*<a href="([^"]*)">([^<]*)</a>[^<]*</td>[^<]*<td[^>]*>[^<]*<a[^>]*>([^<]*)</a>[^<]*</td>[^<]*<td[^>]*>([^ ]*) sec</td>', tasks):
             task_url = "https://atcoder.jp" + task_url
             task_name = html.unescape(task_name)
             self.contest_info["tasks"][task_id] = {
@@ -277,7 +277,7 @@ class AotyamAtCoderCLI:
             for dir_name in ["in", "out", "usr_out"]:
                 (contest_dir / dir_name / task_id).mkdir(exist_ok=True)
             cases, status = self.open_url(task_url)
-            for case_id, case_in, case_out in re.findall(r'Sample Input ([^<]+)</h3>\s*<pre[^>]*>([^<]*)</pre>\s*</section>\s*</div>\s*<div[^>]*>\s*<section[^>]*>\s*<h3[^>]*>Sample Output [^<]+</h3>\s*<pre[^>]*>([^<]*)', cases):
+            for case_id, case_in, case_out in re.findall(r'Sample Input ([^<]+)</h3>[^<]*<pre[^>]*>([^<]*)</pre>[^<]*</section>[^<]*</div>[^<]*<div[^>]*>[^<]*<section[^>]*>[^<]*<h3[^>]*>Sample Output [^<]+</h3>[^<]*<pre[^>]*>([^<]*)', cases):
                 case_filename = "sample_" + case_id + ".txt"
                 with open(contest_dir / "in" / task_id / case_filename, "w") as f:
                     f.write(html.unescape(case_in))
@@ -420,7 +420,7 @@ class AotyamAtCoderCLI:
                     break
             if target_row is None:
                 print_error("Failed to find the submission in the list")
-            match = re.search(r'<span[^>]*class=\s*[\'"]label label-[^\'"]+[\'"][^>]*>\s*([^\s<][^<]*[^\s<]|[^\s<])\s*</span>', target_row)
+            match = re.search(r'<span[^>]*class=[ \t\r\n]*[\'"]label label-[^\'"]+[\'"][^>]*>[ \t\r\n]*([^ \t\r\n<][^<]*[^ \t\r\n<]|[^ \t\r\n<])[ \t\r\n]*</span>', target_row)
             if match is None:
                 print_error("Failed to get submission status")
             judge_status = match.group(1).strip()
